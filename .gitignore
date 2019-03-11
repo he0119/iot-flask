@@ -73,3 +73,6 @@ migrations/
 
 # Angualr
 angular-dist
+
+# VSCode
+.vscode
