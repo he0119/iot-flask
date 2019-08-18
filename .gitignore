@@ -68,11 +68,7 @@ target/
 node_modules/
 
 # Flask
-.env
-migrations/
-
-# Angualr
-angular-dist
+instance/
 
 # VSCode
 .vscode

@@ -1,12 +1,12 @@
-"""All Flask extensions are created here"""
+""" All Flask extensions are created here
+"""
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_swagger_ui import get_swaggerui_blueprint
-from flask_socketio import SocketIO
-from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
-from iot.common.logger import init_logger
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_socketio import SocketIO
+from flask_sqlalchemy import SQLAlchemy
+from flask_swagger_ui import get_swaggerui_blueprint
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -14,21 +14,24 @@ socketio = SocketIO()
 login_manager = LoginManager()
 jwt = JWTManager()
 
+
 def create_app(config):
-    """Return a Flask App."""
-    app = Flask(__name__)
+    """ Return a Flask App.
+    """
+    app = Flask(__name__,
+                instance_path=config.INSTANCE_PATH,
+                instance_relative_config=True)
     app.config.from_object(config)
+    app.config.from_pyfile('application.cfg', silent=True)
 
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, directory='instance/migrations')
     socketio.init_app(app)
     login_manager.init_app(app)
     jwt.init_app(app)
-    init_logger(app.logger)
 
     swaggerui_blueprint = get_swaggerui_blueprint(
-        app.config.get('SWAGGER_URL'),
-        app.config.get('SWAGGER_API_URL'))
+        app.config.get('SWAGGER_URL'), app.config.get('SWAGGER_API_URL'))
     from iot.api.api import api_bp
     from iot.frontend.controllers import frontend_bp
 

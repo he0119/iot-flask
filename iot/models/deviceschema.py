@@ -7,7 +7,7 @@ class DeviceSchema(db.Model):
     __tablename__ = 'deviceschema'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False, unique=True)
+    name = db.Column(db.String(64), nullable=False)
     display_name = db.Column(db.String(64))
     data_type = db.Column(db.Integer, nullable=False)
     show = db.Column(db.Boolean, nullable=False)
