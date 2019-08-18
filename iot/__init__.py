@@ -26,7 +26,7 @@ def create_app(config):
 
     db.init_app(app)
     migrate.init_app(app, db, directory='instance/migrations')
-    socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins='*')
     login_manager.init_app(app)
     jwt.init_app(app)
 
