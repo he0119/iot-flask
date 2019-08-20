@@ -1,4 +1,5 @@
-"""pytest config"""
+""" Pytest config
+"""
 from datetime import datetime
 
 import pytest
@@ -13,7 +14,8 @@ from tests.utils.client import MyTestClient, TokenType
 
 @pytest.fixture
 def client():
-    """My custom test client."""
+    """ My custom test client.
+    """
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
     # app.config['SQLALCHEMY_DATABASE_URI'] = \
@@ -30,8 +32,7 @@ def client():
         db.session.commit()
 
         # Add test device
-        device = Device(
-            name='test', display_name='test', user=user)
+        device = Device(name='test', display_name='test', user=user)
         db.session.add(device)
         db.session.commit()
 
@@ -43,24 +44,23 @@ def client():
         device.set_schema(schema)
 
         # Add test data
-        new_data = DeviceData(
-            time=datetime.utcfromtimestamp(1500000000),
-            data={
-                'test1': 10.0,
-                'test2': 12.0,
-                'control': False,
-            },
-            device=device)
+        new_data = DeviceData(time=datetime.utcfromtimestamp(1500000000),
+                              data={
+                                  'test1': 10.0,
+                                  'test2': 12.0,
+                                  'control': False,
+                              },
+                              device=device)
         db.session.add(new_data)
         db.session.commit()
 
         # Get token
-        access_token = create_access_token(
-            identity=user.username)
-        refresh_token = create_refresh_token(
-            identity=user.username)
+        access_token = create_access_token(identity=user.username)
+        refresh_token = create_refresh_token(identity=user.username)
 
-        my_client = MyTestClient(access_token, refresh_token, default_auth=TokenType.access)
+        my_client = MyTestClient(access_token,
+                                 refresh_token,
+                                 default_auth=TokenType.access)
 
     yield my_client
 

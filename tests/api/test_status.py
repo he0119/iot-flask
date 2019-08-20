@@ -1,9 +1,11 @@
-"""Test Status API"""
+""" Test Status API
+"""
 API_URL = '/api/status'
 
 
 def test_get_status(client):
-    """Get latest data."""
+    """ Get latest data.
+    """
     res = client.get(API_URL)
 
     assert res.status_code == 200
@@ -17,11 +19,12 @@ def test_get_status(client):
 
 
 def test_add_status(client):
-    """Add new device data."""
+    """ Add new device data.
+    """
     data = {
-        "id": 1,
-        "time": 1500000010,
-        "data": '12, 22, 1',
+        'id': 1,
+        'time': 1500000010,
+        'data': '12, 22, 1',
     }
     res = client.post(API_URL, data=data)
 
@@ -46,7 +49,8 @@ def test_add_status(client):
 
 
 def test_modify_device(client):
-    """Modify device status."""
+    """ Modify device status.
+    """
     data = {
         'id': 1,
         'data': {
@@ -59,8 +63,12 @@ def test_modify_device(client):
 
     res = client.socketio.get_received()
 
-    assert res[0]['name'] == '1'
-    assert res[0]['args'][0] == {'control': 'null'}
+    message_exist = False
+    for message in res:
+        if message['name'] == '1':
+            message_exist = True
+            assert message['args'][0] == {'control': 'null'}
+    assert message_exist is True
 
     data = {
         'id': 1,
@@ -75,5 +83,9 @@ def test_modify_device(client):
 
     res = client.socketio.get_received()
 
-    assert res[0]['name'] == '1'
-    assert res[0]['args'][0] == {'control': False}
+    message_exist = False
+    for message in res:
+        if message['name'] == '1':
+            message_exist = True
+            assert res[0]['args'][0] == {'control': False}
+    assert message_exist is True

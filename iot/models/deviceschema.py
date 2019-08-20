@@ -1,9 +1,11 @@
-"""DeviceSchema Model"""
+""" DeviceSchema Model
+"""
 from iot import db
 
 
 class DeviceSchema(db.Model):
-    """Device schema model."""
+    """ Device schema model.
+    """
     __tablename__ = 'deviceschema'
 
     id = db.Column(db.Integer, primary_key=True)

@@ -1,12 +1,19 @@
-"""Website SocketIO"""
-from iot import db, socketio
-from iot.models.device import Device
+""" Website SocketIO
+"""
+from flask_login import current_user
+
+from iot import socketio
+from iot.common.auth import authenticated_only
 
 
 @socketio.on('website')
+@authenticated_only
 def handle_website_event(msg):
-    """Handle request from website"""
+    """ Handle request from website
+    """
     if msg['type'] == 'request':
-        devices = db.session.query(Device).all()
+        devices = current_user.devices.all()
         for device in devices:
-            socketio.emit('status', device.latest_json_data())
+            socketio.emit('status',
+                          device.latest_json_data(),
+                          room=current_user.username)

@@ -1,18 +1,19 @@
-"""Device Model"""
+""" Device Model
+"""
 from datetime import datetime
 
 from sqlalchemy import func
 from sqlalchemy.sql.expression import and_
 
 from iot import db
-from iot.common.utils import datetime2iso
+from iot.common.utils import DeviceDataType, datetime2iso
 from iot.models.devicedata import DeviceData
 from iot.models.deviceschema import DeviceSchema
-from iot.common.utils import DeviceDataType
 
 
 class Device(db.Model):
-    """Device Model."""
+    """ Device Model.
+    """
     __tablename__ = 'device'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -28,7 +29,8 @@ class Device(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def change_status(self, status):
-        """Change online status."""
+        """ Change online status.
+        """
         self.online_status = status
         if status:
             self.last_connect_on = datetime.utcnow()
@@ -36,7 +38,8 @@ class Device(db.Model):
             self.offline_on = datetime.utcnow()
 
     def schema_to_json(self):
-        """'Get schema."""
+        """ Get schema.
+        """
         json = []
         for item in self.schema:
             json.append({
@@ -49,28 +52,30 @@ class Device(db.Model):
         return json
 
     def device_info_to_json(self):
-        """Get device info"""
-        return {'id': self.id,
-                'name': self.name,
-                'displayName': self.display_name,
-                'schema': self.schema_to_json(),
-                'createOn': datetime2iso(self.create_on),
-                'lastConnectOn': datetime2iso(self.last_connect_on),
-                'offlineOn': datetime2iso(self.offline_on),
-                'onlineStatus': self.online_status}
+        """ Get device info.
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'displayName': self.display_name,
+            'schema': self.schema_to_json(),
+            'createOn': datetime2iso(self.create_on),
+            'lastConnectOn': datetime2iso(self.last_connect_on),
+            'offlineOn': datetime2iso(self.offline_on),
+            'onlineStatus': self.online_status
+        }
 
     def latest_json_data(self):
-        """Return device latest data ."""
+        """ Return device latest data .
+        """
         latest = self.data.order_by(DeviceData.id.desc()).first()
         if latest:
             data = latest.json_data()
             return data
-        return {'id': self.id,
-                'time': None,
-                'data': None}
+        return {'id': self.id, 'time': None, 'data': None}
 
     def data_to_json(self, data):
-        """Return json format devicedata.
+        """ Return json format devicedata.
 
         example:
         {
@@ -102,7 +107,7 @@ class Device(db.Model):
         return converted_data
 
     def history_data(self, start, end, interval):
-        """Return history data(a list of devicedata object).
+        """ Return history data(a list of devicedata object).
 
         example:
         [DeviceData(1), DeviceData(2), DeviceData(3)]
@@ -115,27 +120,31 @@ class Device(db.Model):
 
         row_number_column = func.row_number().over(
             order_by=DeviceData.time).label('row_number')
-        data = data.add_column(row_number_column)
-        data = data.from_self().filter(row_number_column % interval == number).all()
+        data = data.add_columns(row_number_column)
+        data = data.from_self().filter(row_number_column %
+                                       interval == number).all()
 
         return data
 
     def set_schema(self, schema):
-        """Set schema."""
+        """ Set schema.
+        """
+        for old_schema in self.schema.all():
+            db.session.delete(old_schema)
+
         for item in schema:
-            new_item = DeviceSchema(
-                name=item,
-                display_name=schema[item][0],
-                data_type=schema[item][1],
-                show=schema[item][2],
-                allow_control=schema[item][3],
-                device=self
-            )
+            new_item = DeviceSchema(name=item,
+                                    display_name=schema[item][0],
+                                    data_type=schema[item][1],
+                                    show=schema[item][2],
+                                    allow_control=schema[item][3],
+                                    device=self)
             db.session.add(new_item)
-            db.session.commit()
+        db.session.commit()
 
     def delete_data(self):
-        """Delete all data."""
+        """ Delete all data.
+        """
         for device_data in self.data.all():
             db.session.delete(device_data)
             db.session.commit()

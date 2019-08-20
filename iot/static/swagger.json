@@ -379,19 +379,20 @@
                 },
                 "example": {
                   "name": "test",
-                  "display": {
-                    "temperature": [
+                  "display_name": "test",
+                  "schema": {
+                    "test": [
+                      "test",
+                      2,
                       1,
                       0
                     ],
-                    "relative_humidity": [
+                    "control": [
+                      "control",
+                      3,
                       1,
-                      0
+                      1
                     ]
-                  },
-                  "schema": {
-                    "temperature": 1,
-                    "relative_humidity": 1
                   }
                 }
               }
@@ -453,14 +454,19 @@
                 "example": {
                   "id": 1,
                   "name": "test",
-                  "display": {
-                    "temperature": [
+                  "display_name": "测试",
+                  "schema": {
+                    "test": [
+                      "测试",
+                      2,
                       1,
                       0
                     ],
-                    "relative_humidity": [
+                    "control": [
+                      "控制",
+                      3,
                       1,
-                      0
+                      1
                     ]
                   }
                 }

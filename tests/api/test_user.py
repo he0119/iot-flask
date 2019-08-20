@@ -1,9 +1,11 @@
-"""Test User API"""
+""" Test User API
+"""
 API_URL = '/api/users'
 
 
 def test_get_username(client):
-    """Get user info."""
+    """ Get user info.
+    """
     res = client.get(API_URL)
 
     assert res.json['username'] == 'test'
@@ -11,10 +13,14 @@ def test_get_username(client):
 
 
 def test_create_user(client):
-    '''create new user'''
-    res = client.post(
-        API_URL,
-        data={'username': 'test1', 'password': 'test1', 'email': 'test1@test.com'})
+    """ Create new user.
+    """
+    res = client.post(API_URL,
+                      data={
+                          'username': 'test1',
+                          'password': 'test1',
+                          'email': 'test1@test.com'
+                      })
 
     assert res.status_code == 201
     assert res.json['username'] == 'test1'
@@ -22,10 +28,9 @@ def test_create_user(client):
 
 
 def test_modify_user(client):
-    """Modify user info."""
-    res = client.put(
-        API_URL,
-        data={'email': 'test1@test.com'})
+    """ Modify user info.
+    """
+    res = client.put(API_URL, data={'email': 'test1@test.com'})
     assert res.status_code == 201
 
     res = client.get(API_URL)
@@ -34,7 +39,8 @@ def test_modify_user(client):
 
 
 def test_delete_user(client):
-    """delete current user."""
+    """ Delete current user.
+    """
     res = client.delete(API_URL)
 
     assert res.status_code == 204

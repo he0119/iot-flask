@@ -34,15 +34,15 @@ def add_some_data(client):
     """
     api_url = '/api/status'
     data = {
-        "id": 1,
-        "time": 1500000010,
-        "data": '12, 22, 1',
+        'id': 1,
+        'time': 1500000010,
+        'data': '12, 22, 1',
     }
     client.post(api_url, data=data)
 
     data = {
-        "id": 1,
-        "time": 1500050000,
-        "data": '10, 12, 0',
+        'id': 1,
+        'time': 1500050000,
+        'data': '10, 12, 0',
     }
     client.post(api_url, data=data)

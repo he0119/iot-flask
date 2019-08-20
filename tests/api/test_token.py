@@ -1,14 +1,16 @@
-"""Test JWT Token"""
+""" Test JWT Token
+"""
 from tests.utils.client import TokenType
+LOGIN_URL = '/api/login'
+REFRESH_URL = '/api/refresh'
 
 
 def test_login_to_get_token(client):
-    """Test login to get token."""
+    """ Test login to get token.
+    """
     client.set_auth(TokenType.empty)
 
-    res = client.post(
-        '/api/login',
-        data={'username': 'test', 'password': 'test'})
+    res = client.post(LOGIN_URL, data={'username': 'test', 'password': 'test'})
 
     assert res.status_code == 200
     assert res.json['access_token'] is not None
@@ -16,12 +18,15 @@ def test_login_to_get_token(client):
 
 
 def test_login_with_wrong_password(client):
-    """Test login with incorrect password."""
+    """ Test login with incorrect password.
+    """
     client.set_auth(TokenType.empty)
 
-    res = client.post(
-        '/api/login',
-        data={'username': 'test', 'password': '123123'})
+    res = client.post(LOGIN_URL,
+                      data={
+                          'username': 'test',
+                          'password': '123123'
+                      })
 
     assert res.status_code == 401
     assert 'access_token' not in res.json
@@ -30,10 +35,11 @@ def test_login_with_wrong_password(client):
 
 
 def test_refresh_token(client):
-    """Test refresh token."""
+    """ Test refresh token.
+    """
     client.set_auth(TokenType.refresh)
 
-    res = client.get('/api/refresh')
+    res = client.get(REFRESH_URL)
 
     assert res.status_code == 200
     assert res.json['access_token'] is not None
